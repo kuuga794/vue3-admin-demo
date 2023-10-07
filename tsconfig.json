@@ -1,4 +1,4 @@
-{
+{ 
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -10,17 +10,23 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "suppressImplicitAnyIndexErrors": true,
-    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "lib": [
+      "esnext",
+      "dom",
+      "es5",
+      "es6",
+      "dom.iterable"
+    ],
     "typeRoots": [
       "./node_modules/@types/",
-      "./types"
+      "./src/types/"
     ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "#/*": ["./types/*"]
-    },
   },
-  "include": ["src/**/*.ts", "src/**/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts", "types/**/*.ts",]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue",
+    "src/**/*.tsx",
+  ]
 }

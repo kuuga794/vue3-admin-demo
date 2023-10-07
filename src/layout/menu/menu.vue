@@ -1,106 +1,103 @@
 <template>
   <div class="sidebar-wrap">
-    <el-menu
-      active-text-color="#ffffff"
-      background-color="#1c2b36"
-      class="el-menu-vertical-demo"
-      text-color="rgb(165, 170, 174)"
-      :default-active="defaultActive"
-      router
-    >
-      <template v-for="(pMenu, pIndex) in myRoutes" :key="pMenu.name">
-        <!-- 一级 -->
-        <el-menu-item
-          v-if="!pMenu.meta?.hidden && pMenu.meta?.onlyShowParent"
-          :index="pMenu.path === '/' ? '/dashboard' : pMenu.path"
-        >
-          <template #title>
-            <el-icon>
-              <component :is="pMenu.meta.icon" />
-            </el-icon>
-            <span>{{ pMenu.meta.title }}</span>
-          </template>
-        </el-menu-item>
-        <!-- 二级 -->
-        <el-sub-menu
-          v-if="!pMenu.meta?.hidden && !pMenu.meta?.onlyShowParent && pMenu.children?.length"
-          :index="'pMenu' + pIndex"
-        >
-          <template #title>
-            <el-icon>
-              <component :is="pMenu.meta?.icon" />
-            </el-icon>
-            <span>{{ pMenu.meta?.title }}</span>
-          </template>
-          <template v-for="(cMenu, cIndex) in pMenu.children" :key="`${ pIndex }-${ cIndex }`">
-            <el-menu-item
-              v-if="!cMenu.meta?.hidden"
-              :index="`${pMenu.path}/${cMenu.path}`"
-            >{{ cMenu.meta?.title }}</el-menu-item>
-          </template>
-        </el-sub-menu>
-      </template>
+    <div class="sidebar-logo">
+      <img src="../../assets/images/logo.svg" alt="" />
+    </div>
+    <el-menu class="el-menu-vertical-demo" text-color="#606266" :default-active="defaultActive">
+      <menu-item :routeItems="myRoutes" />
     </el-menu>
   </div>
 </template>
 
 <script setup lang="ts">
-
 import { ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import Cookies from 'js-cookie';
 import { routes } from '@/router/index';
 import useUserStore from '@/store/modules/user';
+import MenuItem from './menuItem.vue';
 
-const route = useRoute();
 const userStore = useUserStore();
-const permCodes = userStore.getPermCodes;
-const defaultActive = ref('/dashboard');
+const roleId = String(userStore.roleId || Cookies.get('c_roleId'));
+const $route = useRoute();
+const defaultActive = ref<string>('');
 
 watchEffect(() => {
-  defaultActive.value = route.path;
+  // 如果是只显示一级，name取对应一级name
+  if ($route.meta.onlyShowParent) {
+    defaultActive.value = `${$route.matched[0].name}`;
+    return;
+  }
+  defaultActive.value = `${$route.name}`;
 });
 
-// 没有权限
-const checkNoPermission = (i: any): Boolean => {
-  if (!permCodes.length) return true;
-  if (!i.meta || !i.meta.code) return false;
-  return i.meta && i.meta.code && !permCodes.includes(i.meta.code);
+// 校验权限
+const checkRole = (route: any) => {
+  if (route.meta.hidden !== undefined) return route.meta.hidden;
+  if (!route.meta.code) return false;
+  if (route.meta.code.split(',').includes(roleId)) return false;
+  return true;
 };
 
-// 菜单权限控制
-const myRoutes = ref(routes.map((item) => {
-  // 父级无权限
-  if (item.meta && checkNoPermission(item)) {
-    item.meta.hidden = true;
-  }
+// 递归校验路由
+const handleCheckRoutes = (routesList) => {
+  const resultRoutes = routesList;
+  resultRoutes.forEach((item) => {
+    if (item?.meta) {
+      item.meta.hidden = checkRole(item);
+    }
+    if (item.children && item.children.length) {
+      handleCheckRoutes(item.children);
+    }
+  });
+  return resultRoutes;
+};
 
-  // 有权限的子菜单数量
-  let childrenPermissionCount = 0;
+// 递归过滤路由
+const handleFilterRoutes = (routesList) => {
+  let resultRoutes = routesList;
+  resultRoutes = resultRoutes.filter((item) => {
+    if (item.children && item.children.length) {
+      item.children = handleFilterRoutes(item.children);
+    }
+    return !item.meta?.hidden;
+  });
+  return resultRoutes;
+};
 
-  if (item.children && item.children.length) {
-    item.children.forEach((child) => {
-      if (child.meta && checkNoPermission(child)) {
-        child.meta.hidden = true;
-      } else {
-        childrenPermissionCount += 1;
-      }
-    });
-  }
-
-  // 子级皆无权限，隐藏父级
-  if (item.meta && !childrenPermissionCount && item.children) {
-    item.meta.hidden = true;
-  }
-
-  return item;
-}));
-
+const myRoutes = handleFilterRoutes(handleCheckRoutes(routes));
 </script>
 
 <style lang="scss" scoped>
 .sidebar-wrap {
   width: 100%;
   min-height: 100%;
-  background-color: #1c2b36;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    background-color: var(--el-color-primary);
+
+    img {
+      width: 80px;
+      height: auto;
+      filter: brightness(1000%);
+    }
+  }
+
+  .el-menu-vertical-demo {
+    border-right: 0;
+  }
+  :deep .el-menu-item * {
+    vertical-align: top;
+  }
+  :deep .el-menu-item.is-active {
+    background-color: var(--el-menu-hover-bg-color);
+  }
 }
 </style>

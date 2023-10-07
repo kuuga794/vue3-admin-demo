@@ -1,36 +1,37 @@
-import request from '@/utils/request';
+import request from '@/http/request';
+
 
 // 登录
 export async function login(data: any) {
   const res = await request({
-    url: '/sysuser/login',
-    method: 'post',
-    data: {
-      tenantId: 1,
-      mobile: data.username,
-      password: data.password,
-      code: data.imageCode,
-      uuid: data.uuid,
-      brandType: 1,
-      type: 0,
-    },
+    url: '/login',
+    method: 'POST',
+    data,
   });
   return res;
 }
 
-// 退出登录
-export function logout() {
+// 获取用户信息
+export function getInfo() {
   return request({
-    url: '/user/logout',
-    method: 'post',
+    url: '/getInfo',
+    method: 'GET',
   });
 }
 
-// 通过token获取用户信息
-export async function getUserInfo(params = {}) {
-  const res = await request({
-    url: '/sysuser/getsysuser',
-    params,
+// 修改密码
+export function updatePassword(data: any) {
+  return request({
+    url: '/system/user/profile/updatePwd',
+    method: 'PUT',
+    params: data,
   });
-  return res;
+}
+
+// 获取验证码
+export function getCaptcha() {
+  return request({
+    url: '/captchaImage',
+    method: 'GET',
+  });
 }

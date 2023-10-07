@@ -3,19 +3,13 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'plugin:vue/essential',
-    'airbnb-base',
-  ],
+  extends: ['plugin:vue/essential', 'airbnb-base'],
   parserOptions: {
     ecmaVersion: 13,
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
   },
-  plugins: [
-    'vue',
-    '@typescript-eslint',
-  ],
+  plugins: ['vue', '@typescript-eslint'],
   rules: {
     'no-param-reassign': 'off',
     'vue/no-v-for-template-key': 'off',
@@ -26,5 +20,6 @@ module.exports = {
     'no-bitwise': 'off',
     'max-len': ['error', { code: 200 }],
     'vue/no-v-model-argument': 'off',
+    'linebreak-style': 'windows',
   },
 };

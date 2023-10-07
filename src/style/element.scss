@@ -1,0 +1,86 @@
+// 重置el样式 --- input --- 登录页
+.reset-element-input {
+  .el-input__wrapper {
+    box-shadow: none !important;
+    background: none !important;
+    border: none !important;
+  }
+  .el-input-group__append {
+    padding: 0;
+  }
+  input::-webkit-input-placeholder {
+    color: #999999;
+  }
+}
+
+// 重置el样式 --- tree --- 分配供应商
+.reset-element-tree {
+  .el-tree-node__label {
+    width: 100%;
+  }
+}
+
+// 重置el样式 --- step --- 采购账单详情
+.reset-element-step {
+  .is-finish {
+    color: #b99145 !important;
+    border-color: #b99145 !important; 
+  }
+}
+
+// 重置el样式 --- textarea --- 聊天功能
+.reset-element-textarea {
+  &.is-disabled .el-textarea__inner {
+    background-color: initial !important;
+  }
+}
+
+// 重置el样式 --- popper --- NAV
+.reset-element-popper {
+  z-index: 9999 !important;
+}
+
+// ------------ 以下为全局更改 ------------
+
+// 重置el样式 --- 幕布
+.w-e-full-screen-container {
+  z-index: 99999;
+}
+
+// 重置el样式 --- 文字按钮
+.el-button.is-text {
+  padding: 0 !important;
+
+  &:not(.is-disabled):focus-visible {
+    outline: 0;
+  }
+}
+
+// 重置el样式 --- 月份选择器 --- 选中与当前月状态对调
+.el-month-table td.today .cell {
+  font-weight: initial;
+}
+.el-month-table td.current .cell {
+  font-weight: 700;
+}
+
+// popper
+.el-popper {
+  max-width: 600px;
+}
+
+.el-form-item {
+  margin-bottom: 12px;
+}
+
+.el-form--inline .el-form-item {
+  margin-right: 12px;
+}
+
+.el-image {
+  vertical-align: middle;
+}
+
+.el-dropdown .el-dropdown-link:focus {
+  outline: none;
+}

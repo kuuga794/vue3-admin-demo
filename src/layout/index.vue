@@ -7,6 +7,7 @@
       <LayoutNav></LayoutNav>
       <LayoutMain></LayoutMain>
     </div>
+    <el-backtop :right="20" :bottom="80" />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import LayoutNav from './nav/nav.vue';
 .app-wrap {
   width: 100%;
   min-height: 100%;
+  background-color: #f5f7fc;
 
   .app-menu {
     position: fixed;
@@ -27,7 +29,7 @@ import LayoutNav from './nav/nav.vue';
     left: 0;
     width: 200px;
     height: 100%;
-    z-index: 9;
+    z-index: 999;
   }
 
   .app-main {
